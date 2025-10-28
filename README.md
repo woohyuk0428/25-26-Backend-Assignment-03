@@ -19,15 +19,15 @@
 
 ## CRUD 및 쿼리 로그 예시
 
-| 기능                   | 발생 쿼리 예시                                                   |
-|-----------|------------------------------------------------------------|
-| 가수 생성     | insert into singer (name, debutYear) values ('뉴진스', 2022)  |
+| 기능       | 발생 쿼리 예시                                                   |
+|----------|------------------------------------------------------------|
+| 가수 생성    | insert into singer (name, debut_year) values ('뉴진스', 2022)  |
 | 가수 삭제    | delete from singer where id = 1                            |
-| 뮤직 생성     | insert into music(title, singer_id) values ('어텐션', 1)      |
-| 뮤직 수정     | update music set title = '슈퍼내추럴', singer_id = 1 where id = 1 |
-| 뮤직 삭제     | delete from music where id = 1;                            |
-| 특정 뮤직 조회  | select * from music where id = 1;                          |
-| 전체 음악 조회  | select * from music;                                       |
+| 뮤직 생성    | insert into music(title, singer_id) values ('어텐션', 1)      |
+| 뮤직 수정    | update music set title = '슈퍼내추럴', singer_id = 1 where id = 1 |
+| 뮤직 삭제    | delete from music where id = 1;                            |
+| 특정 뮤직 조회 | select * from music where id = 1;                          |
+| 전체 뮤직 조회 | select * from music;                                       |
 
 ---
 
