@@ -4,16 +4,11 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.util.List;
 
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
-@Table(name = "bus")
 public class Bus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,14 +26,32 @@ public class Bus {
     private Route route;
 
     @Builder
-    public Bus(String busNumber, String type) {
+    public Bus(String busNumber, String type, Company company, Route route) {
+        this.busNumber = busNumber;
+        this.type = type;
+        this.company = company;
+        this.route = route;
+    }
+    public void update (String busNumber, String type){
         this.busNumber = busNumber;
         this.type = type;
     }
-
-    public void update(String busNumber, String type) {
+    public void updateCompanyBus(String busNumber, String type, Company company) {
         this.busNumber = busNumber;
         this.type = type;
+        this.company = company;
+    }
+
+    public void updateRouteBus(String busNumber, String type, Route route) {
+        this.busNumber = busNumber;
+        this.type = type;
+        this.route = route;
+    }
+    public void updateAllBus(String busNumber, String type, Company company, Route route) {
+        this.busNumber = busNumber;
+        this.type = type;
+        this.company = company;
+        this.route = route;
     }
 
 

@@ -8,20 +8,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class CompanyService {
     private final CompanyRepository companyRepository;
 
+    //create
     @Transactional
-    public List<Company> findAll(){
-        return companyRepository.findAll();
-    }
-
-    @Transactional
-    public CompanyInfoResponseDto saveConpany(CompanySaveRequestDto companySaveRequestDto) {
+    public CompanyInfoResponseDto saveCompany(CompanySaveRequestDto companySaveRequestDto) {
         Company company = Company.builder()
                 .companyName(companySaveRequestDto.getCompanyName())
                 .phoneNumber(companySaveRequestDto.getPhoneNumber())
@@ -31,18 +26,12 @@ public class CompanyService {
         return CompanyInfoResponseDto.from(company);
     }
 
+    //delete
     @Transactional
-    public CompanyInfoResponseDto updateConpany(Long id,CompanySaveRequestDto companySaveRequestDto) {
-        Company company = companyRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 회원입니다.")
+    public void deleteCompany(Long id) {
+        companyRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 회사입니다.")
         );
-        company.setCompanyName(companySaveRequestDto.getCompanyName());
-        company.setPhoneNumber(companySaveRequestDto.getPhoneNumber());
-        company.setRegion(companySaveRequestDto.getRegion());
-        return CompanyInfoResponseDto.from(companyRepository.save(company));
-    }
-    @Transactional
-    public void deleteConpany(Long id) {
         companyRepository.deleteById(id);
     }
 }

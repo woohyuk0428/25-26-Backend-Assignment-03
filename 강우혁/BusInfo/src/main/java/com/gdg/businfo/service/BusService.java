@@ -21,34 +21,95 @@ public class BusService {
     private final BusRepository busRepository;
     private final CompanyRepository companyRepository;
 
-    @Transactional(readOnly = true)
-    public List<Bus> findAll() {
-        return busRepository.findAll();
-    }
-
+    //create
     @Transactional
-    public BusInfoResponseDto saveBus(Long companyId, Long routeId, BusSaveRequestDto busSaveRequestDto) {
-        Company company = companyRepository.findById(companyId)
-                .orElseThrow(() -> new RuntimeException("회사를 찾을 수 없습니다."));
-        Route route = routeRepository.findById(routeId)
-                .orElseThrow(() -> new RuntimeException("노선 정보가 없습니다."));
+    public BusInfoResponseDto saveBus(BusSaveRequestDto busSaveRequestDto) {
+        Company company = companyRepository.findById(busSaveRequestDto.getCompanyId())
+                .orElseThrow(() -> new IllegalArgumentException("회사를 찾을 수 없습니다."));
+        Route route = routeRepository.findById(busSaveRequestDto.getRouteId())
+                .orElseThrow(() -> new IllegalArgumentException("노선 정보가 없습니다."));
         Bus bus = Bus.builder()
                 .busNumber(busSaveRequestDto.getBusNumber())
                 .type(busSaveRequestDto.getType())
+                .company(company)
+                .route(route)
                 .build();
         busRepository.save(bus);
         return BusInfoResponseDto.from(bus);
     }
+    //read
+    @Transactional(readOnly = true)
+    public BusInfoResponseDto getBus(Long id) {
+        Bus bus = busRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(("버스 정보가 없습니다."))
+        );
+        return BusInfoResponseDto.from(bus);
+    }
 
+    @Transactional(readOnly = true)
+    public List<BusInfoResponseDto> getAllBus() {
+            return busRepository.findAll()
+                    .stream()
+                    .map(BusInfoResponseDto::from)
+                    .toList();
+    }
+
+    //update
     @Transactional
     public BusInfoResponseDto updateBus(Long id, BusSaveRequestDto busSaveRequestDto) {
         Bus bus = busRepository.findById(id).orElseThrow(
-                ()-> new RuntimeException("버스 아이디를 확인 할 수 없습니다.")
+                ()-> new IllegalArgumentException("버스 아이디를 확인 할 수 없습니다.")
         );
-        bus.setBusNumber(busSaveRequestDto.getBusNumber());
-        bus.setType(busSaveRequestDto.getType());
-        busRepository.save(bus);
+        bus.update(busSaveRequestDto.getBusNumber(),busSaveRequestDto.getType());
         return BusInfoResponseDto.from(bus);
+    }
+
+    @Transactional
+    public BusInfoResponseDto updateCompanyBus(Long id, Long companyId, BusSaveRequestDto busSaveRequestDto) {
+        Bus bus = busRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("버스를 찾을 수 없습니다.")
+        );
+        Company company = companyRepository.findById(companyId).orElseThrow(
+                () -> new IllegalArgumentException(("회사를 찾을 수 없습니다."))
+        );
+        bus.updateCompanyBus(busSaveRequestDto.getBusNumber(),busSaveRequestDto.getType(), company);
+        return BusInfoResponseDto.from(bus);
+    }
+
+    @Transactional
+    public BusInfoResponseDto updateRouteBus(Long id, Long routeId, BusSaveRequestDto busSaveRequestDto) {
+        Bus bus = busRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("버스를 찾을 수 없습니다.")
+        );
+        Route route = routeRepository.findById(routeId).orElseThrow(
+                () -> new IllegalArgumentException("노선을 찾을 수 없습니다.")
+        );
+        bus.updateRouteBus(busSaveRequestDto.getBusNumber(), busSaveRequestDto.getType(), route);
+        return BusInfoResponseDto.from(bus);
+    }
+
+    @Transactional
+    public BusInfoResponseDto updateAllBus(Long id, Long companyId, Long routeId, BusSaveRequestDto busSaveRequestDto) {
+        Bus bus = busRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("버스를 찾을 수 없습니다.")
+        );
+        Company company = companyRepository.findById(companyId).orElseThrow(
+                () -> new IllegalArgumentException("회사를 찾을 수 없습니다.")
+        );
+        Route route = routeRepository.findById(routeId).orElseThrow(
+                () -> new IllegalArgumentException("노선을 찾을 수 없습니다.")
+        );
+        bus.updateAllBus(busSaveRequestDto.getBusNumber(), busSaveRequestDto.getType(), company, route);
+        return BusInfoResponseDto.from(bus);
+    }
+
+    //delete
+    @Transactional
+    public void deleteBus(Long id) {
+        busRepository.findById(id).orElseThrow(
+                ()-> new IllegalArgumentException("버스를 확인 할 수 없습니다.")
+        );
+        busRepository.deleteById(id);
     }
 
 }
